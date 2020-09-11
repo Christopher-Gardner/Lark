@@ -30,18 +30,18 @@ def genS(vertices, radius, power):
 def drawHexagonalGrid(radius, image):
     draw = ImageDraw.Draw(image)
     center = tuple(math.floor(x / 2) for x in image.size)
+    # shrink the hexagons so the background color appears as an outline
+    outline = math.floor(radius / 10) + 1
+    hexagonVerts = hexagon(center, radius - outline)
     for i in range(-4, 5):
         for j in range(-2, 3):
-            # shrink the hexagons so the background color appears as an outline
-            outline = math.floor(radius / 10) + 1
-            vertices = hexagon(center, radius - outline)
             # compensate for the horizontal translation of the S generator
             iOffset = math.floor(j / 2)
-            vertices = genT(vertices, radius, i - iOffset)
-            vertices = genS(vertices, radius, j)
+            translatedVerts = genT(hexagonVerts, radius, i - iOffset)
+            translatedVerts = genS(translatedVerts, radius, j)
             color = (random.randint(0, 255), random.randint(0, 255),
                      random.randint(0, 255))
-            draw.polygon(vertices, fill=color)
+            draw.polygon(translatedVerts, fill=color)
 
 
 # higher quality results in crisper images
