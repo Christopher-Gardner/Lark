@@ -31,7 +31,7 @@ def drawHexagonalGrid(radius, image):
     draw = ImageDraw.Draw(image)
     center = tuple(math.floor(x / 2) for x in image.size)
     # shrink the hexagons so the background color appears as an outline
-    outline = math.floor(radius / 10) + 1
+    outline = math.ceil(radius / 10)
     hexagonVerts = hexagon(center, radius - outline)
     for i in range(-4, 5):
         for j in range(-2, 3):
@@ -47,7 +47,7 @@ def drawHexagonalGrid(radius, image):
 # higher quality results in crisper images
 quality = 300
 size = (16 * quality, 9 * quality)
-radius = math.floor(quality / 1.5)
+radius = math.ceil(quality / 1.5)
 image = Image.new("RGB", size, (255, 255, 255))
 drawHexagonalGrid(radius, image)
 image.save("image.png")
