@@ -27,12 +27,12 @@ def genS(vertices, radius, power):
         for (x, y) in vertices)
 
 
-def drawHexagonGrid(radius, image):
+def drawHexagonalGrid(radius, image):
     draw = ImageDraw.Draw(image)
     center = tuple(math.floor(x / 2) for x in image.size)
     for i in range(-5, 6):
         for j in range(-3, 4):
-            # shrink them so the background color appears as an outline
+            # shrink the hexagons so the background color appears as an outline
             outline = math.floor(radius / 10) + 1
             vertices = hexagon(center, radius - outline)
             # compensate for the horizontal translation of the S generator
@@ -49,6 +49,6 @@ quality = 300
 size = (16 * quality, 9 * quality)
 radius = math.floor(quality / 1.5)
 image = Image.new("RGB", size)
-drawHexagonGrid(radius, image)
+drawHexagonalGrid(radius, image)
 image.save("image.png")
 image.show()
