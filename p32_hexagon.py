@@ -17,14 +17,14 @@ def hexagon(center, radius):
     return (v0, v1, v2, v3, v4, v5)
 
 
-def genT(vertices, radius, power):
-    return tuple((x + radius * math.sqrt(3) * power, y) for (x, y) in vertices)
+def genT(verts, radius, power):
+    return tuple((x + radius * math.sqrt(3) * power, y) for (x, y) in verts)
 
 
-def genS(vertices, radius, power):
+def genS(verts, radius, power):
     return tuple(
         (x + radius * math.sqrt(3) * power / 2, y + radius * 1.5 * power)
-        for (x, y) in vertices)
+        for (x, y) in verts)
 
 
 def drawHexagonalGrid(radius, image):
