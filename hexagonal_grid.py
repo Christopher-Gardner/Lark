@@ -1,5 +1,5 @@
 # drawing a hexagonal grid
-# a Python implementation of: Indera's Pearls, page 32, box 3
+# a Python implementation of: Indera's Pearls, box 3
 
 import random
 import math
