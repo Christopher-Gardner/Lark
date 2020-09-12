@@ -53,13 +53,15 @@ def plotRotations(scale, image):
     center = tuple(math.floor(x / 2) for x in image.size)
     polygon = getParallelogram(center, scale)
     draw = ImageDraw.Draw(image)
-    for i in range(20):
-        translated = rotatePolygonAboutPoint(polygon, 100 * math.sqrt(2) * i, center)
+    # try increasing the range
+    for i in range(100):
+        translated = rotatePolygonAboutPoint(polygon, 100 * math.sqrt(2) * i,
+                                             center)
         color = getRandomColor()
         draw.polygon(translated, fill=color)
 
 
-quality = 100
+quality = 300
 size = 16 * quality, 9 * quality
 scale = quality
 image = Image.new("RGB", size, (255, 255, 255))
