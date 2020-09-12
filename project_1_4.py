@@ -55,8 +55,8 @@ def plotRotations(scale, image):
     draw = ImageDraw.Draw(image)
     # try increasing the range
     for i in range(100):
-        translated = rotatePolygonAboutPoint(polygon, 100 * math.sqrt(2) * i,
-                                             center)
+        angle = 100 * math.sqrt(2) * i
+        translated = rotatePolygonAboutPoint(polygon, angle, center)
         color = getRandomColor()
         draw.polygon(translated, fill=color)
 
