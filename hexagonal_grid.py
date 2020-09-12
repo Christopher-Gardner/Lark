@@ -18,15 +18,15 @@ def getHexagon(center, radius):
 
 
 # translation along the x axis
-def genT(verts, radius, power):
-    return tuple((x + radius * math.sqrt(3) * power, y) for (x, y) in verts)
+def genT(polygon, radius, power):
+    return tuple((x + radius * math.sqrt(3) * power, y) for (x, y) in polygon)
 
 
 # translation along the line forming a pi / 2 angle with the x axis
-def genS(verts, radius, power):
+def genS(polygon, radius, power):
     return tuple(
         (x + radius * math.sqrt(3) * power / 2, y + radius * 1.5 * power)
-        for (x, y) in verts)
+        for (x, y) in polygon)
 
 
 def getRandomColor():
@@ -49,6 +49,8 @@ def drawHexagonalGrid(radius, image):
             translated = genT(polygon, radius, i - iOffset)
             translated = genS(translated, radius, j)
             color = getRandomColor()
+            if i == 0 and j == 0:
+                color = 200, 200, 200
             draw.polygon(translated, fill=color)
 
 
