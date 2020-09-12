@@ -1,5 +1,5 @@
-# Plotting rotations.
-# A Python implementation of project 1.4 from Indera's Pearls.
+# Drawing a hexagonal grid.
+# A Python implementation of "box 3" from Indera's Pearls.
 
 import random
 import math
@@ -7,39 +7,26 @@ from PIL import Image
 from PIL import ImageDraw
 
 
-def getParallelogram(origin, scale):
-    v0 = origin[0] - scale * 2, origin[1] + 3 * scale
-    v1 = origin[0] - scale * 2, origin[1] + 2 * scale
-    v2 = origin
-    v3 = origin[0], origin[1] + scale
-    return v0, v1, v2, v3
+def getHexagon(center, radius):
+    v0 = center[0], center[1] + radius
+    v1 = center[0] - radius * math.sqrt(3) / 2, center[1] + radius / 2
+    v2 = center[0] - radius * math.sqrt(3) / 2, center[1] - radius / 2
+    v3 = center[0], center[1] - radius
+    v4 = center[0] + radius * math.sqrt(3) / 2, center[1] - radius / 2
+    v5 = center[0] + radius * math.sqrt(3) / 2, center[1] + radius / 2
+    return v0, v1, v2, v3, v4, v5
 
 
-def translateVertex(vertex, translation):
-    x = vertex[0] + translation[0]
-    y = vertex[1] + translation[1]
-    return x, y
+# translation along the x axis
+def genT(polygon, radius, power):
+    return tuple((x + radius * math.sqrt(3) * power, y) for (x, y) in polygon)
 
 
-def translatePolygon(polygon, translation):
-    return tuple(translateVertex(vertex, translation) for vertex in polygon)
-
-
-def rotateVertex(vertex, angle):
-    x = vertex[0] * math.cos(angle) - vertex[1] * math.sin(angle)
-    y = vertex[1] * math.cos(angle) + vertex[0] * math.sin(angle)
-    return x, y
-
-
-def rotatePolygon(polygon, angle):
-    return tuple(rotateVertex(vertex, angle) for vertex in polygon)
-
-
-def rotatePolygonAboutPoint(polygon, angle, point):
-    negatedPoint = -point[0], -point[1]
-    translated = translatePolygon(polygon, negatedPoint)
-    rotated = rotatePolygon(translated, angle)
-    return translatePolygon(rotated, point)
+# translation along the line forming a pi / 2 angle with the x axis
+def genS(polygon, radius, power):
+    return tuple(
+        (x + radius * math.sqrt(3) * power / 2, y + radius * 1.5 * power)
+        for (x, y) in polygon)
 
 
 def getRandomColor():
@@ -49,22 +36,28 @@ def getRandomColor():
     return r, g, b
 
 
-def plotRotations(scale, image):
-    center = tuple(math.floor(x / 2) for x in image.size)
-    polygon = getParallelogram(center, scale)
+def drawHexagonalGrid(radius, image):
     draw = ImageDraw.Draw(image)
-    # try increasing the range
-    for i in range(100):
-        angle = 100 * math.sqrt(2) * i
-        translated = rotatePolygonAboutPoint(polygon, angle, center)
-        color = getRandomColor()
-        draw.polygon(translated, fill=color)
+    center = tuple(math.floor(x / 2) for x in image.size)
+    # shrink the hexagons so the background color appears as an outline
+    outline = math.ceil(radius / 10)
+    polygon = getHexagon(center, radius - outline)
+    for i in range(-4, 5):
+        for j in range(-2, 3):
+            # compensate for the horizontal translation of the S generator
+            iOffset = math.floor(j / 2)
+            translated = genT(polygon, radius, i - iOffset)
+            translated = genS(translated, radius, j)
+            color = getRandomColor()
+            if i == 0 and j == 0:
+                color = 200, 200, 200
+            draw.polygon(translated, fill=color)
 
 
 quality = 300
-size = 16 * quality, 9 * quality
-scale = quality
+size = (16 * quality, 9 * quality)
+radius = math.ceil(quality / 1.5)
 image = Image.new("RGB", size, (255, 255, 255))
-plotRotations(scale, image)
+drawHexagonalGrid(radius, image)
 image.save("image.png")
 image.show()
